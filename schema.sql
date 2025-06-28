@@ -31,7 +31,7 @@ CREATE TABLE irrigation(
 );
 
 CREATE TABLE fertilizers(
-    crop_name VARCHAR(20) PRIMARY KEY,
+    crop_name VARCHAR(20),
     il_type VARCHAR(50),
     fertilizer_name VARCHAR(50),
     dosage_per_acre VARCHAR(50),
