@@ -1,4 +1,4 @@
-CREATE DATABSE IF NOT EXISTS agrismart;
+CREATE DATABaSE IF NOT EXISTS agrismart;
 use agrismart;
 CREATE TABLE crops(
     crop_name VARCHAR(20) PRIMARY KEY,
