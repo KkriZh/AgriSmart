@@ -38,4 +38,33 @@ CREATE TABLE fertilizers(
     PRIMARY KEY (crop_name, soil_type),
     FOREIGN KEY (crop_name) REFERENCES crops(crop_name)
 );
+CREATE TABLE yield_history(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    crop_name VARCHAR(50),
+    region VARCHAR(50),
+    year INT,
+    yield_per_hectare DECIMAL(6,2),
+    FOREIGN KEY (crop_name) REFERENCES crops(crop_name)
+);
 
+CREATE TABLE market_prices(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    crop_name VARCHAR(20),
+    region VARCHAR(20),
+    price_per_KG DECIMAL(6,2),
+    date DATE,
+    FOREIGN KEY(crop_name) REFERENCES crops(crop_name)
+);
+
+CREATE TABLE storage_advice(
+    crop_name VARCHAR(20) PRIMARY KEY,
+    storage_months INT,
+    storage_conditions TEXT,
+    FOREIGN KEY(crop_name) REFERENCES crops(crop_name)
+);
+CREATE TABLE users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50),
+    password VARCHAR(100),
+    region VARCHAR(50)
+);
