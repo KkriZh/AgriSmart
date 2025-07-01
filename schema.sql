@@ -55,7 +55,7 @@ CREATE TABLE market_prices(
 CREATE TABLE storage_advice(
     crop_name VARCHAR(20) PRIMARY KEY,
     storage_temp_celsius Int,
-    storage_life_days Int;
+    storage_life_days Int,
     storage_condition TEXT,
     FOREIGN KEY(crop_name) REFERENCES crops(crop_name)
 );
