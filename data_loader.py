@@ -246,6 +246,7 @@ def insert_data():
         """, storage_advice)
 
         conn.commit()
+        print("Data inserted and committed successfully.")
 
     except Exception as e:
         conn.rollback()
@@ -254,3 +255,5 @@ def insert_data():
     finally:
         cursor.close()
         conn.close()
+if __name__ == "__main__":
+            insert_data()
