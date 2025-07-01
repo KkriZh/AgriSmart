@@ -175,3 +175,29 @@ def plot_market_prices(crops=None):
     plt.grid(axis="y")
     plt.tight_layout()
     plt.show()
+
+def get_soil_fertility():
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = "SELECT type, fertility_level FROM soil_data"
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    df = pd.DataFrame(rows, columns=["Soil Type", "Fertility Level"])
+    return df
+
+def plot_soil_fertility_distribution():
+    df = get_soil_fertility()
+    if df.empty:
+        print("No soil data found.")
+        return
+    
+    plt.figure(figsize=(8, 5))
+    sns.countplot(data=df, x="Fertility Level", order=["Low", "Medium", "High"], palette="Set2")
+    plt.title("Distribution of Soil Fertility Levels")
+    plt.xlabel("Fertility Level")
+    plt.ylabel("Count of Soil Types")
+    plt.tight_layout()
+    plt.show()
