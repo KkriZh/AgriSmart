@@ -47,11 +47,8 @@ CREATE TABLE yield_history(
 );
 
 CREATE TABLE market_prices(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    crop_name VARCHAR(20),
-    region VARCHAR(20),
+    crop_name VARCHAR(20) PRIMARY KEY,
     price_per_KG DECIMAL(6,2),
-    date DATE,
     FOREIGN KEY(crop_name) REFERENCES crops(crop_name)
 );
 
