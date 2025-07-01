@@ -16,7 +16,7 @@ CREATE TABLE soil_data(
     fertility_level VARCHAR(20)
 );
 
-CREATE TABLE wether_data(
+CREATE TABLE weather_data(
     wether_id INT PRIMARY KEY AUTO_INCREMENT,
     region VARCHAR(20),
     month VARCHAR(20),
