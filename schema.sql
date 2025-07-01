@@ -16,7 +16,7 @@ CREATE TABLE soil_data(
     fertility_level VARCHAR(20)
 );
 
-CREATE TABLE wether_data(
+CREATE TABLE weather_data(
     wether_id INT PRIMARY KEY AUTO_INCREMENT,
     region VARCHAR(20),
     month VARCHAR(20),
@@ -32,10 +32,9 @@ CREATE TABLE irrigation(
 
 CREATE TABLE fertilizers(
     crop_name VARCHAR(20),
-    il_type VARCHAR(50),
     fertilizer_name VARCHAR(50),
-    dosage_per_acre VARCHAR(50),
-    PRIMARY KEY (crop_name, soil_type),
+    dosage_per_hectare INT,
+    PRIMARY KEY (crop_name),
     FOREIGN KEY (crop_name) REFERENCES crops(crop_name)
 );
 CREATE TABLE yield_history(
@@ -48,18 +47,16 @@ CREATE TABLE yield_history(
 );
 
 CREATE TABLE market_prices(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    crop_name VARCHAR(20),
-    region VARCHAR(20),
+    crop_name VARCHAR(20) PRIMARY KEY,
     price_per_KG DECIMAL(6,2),
-    date DATE,
     FOREIGN KEY(crop_name) REFERENCES crops(crop_name)
 );
 
 CREATE TABLE storage_advice(
     crop_name VARCHAR(20) PRIMARY KEY,
-    storage_months INT,
-    storage_conditions TEXT,
+    storage_temp_celsius Int,
+    storage_life_days Int,
+    storage_condition TEXT,
     FOREIGN KEY(crop_name) REFERENCES crops(crop_name)
 );
 CREATE TABLE users (
