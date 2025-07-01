@@ -32,10 +32,9 @@ CREATE TABLE irrigation(
 
 CREATE TABLE fertilizers(
     crop_name VARCHAR(20),
-    soil_type VARCHAR(50),
     fertilizer_name VARCHAR(50),
-    dosage_per_acre VARCHAR(50),
-    PRIMARY KEY (crop_name, soil_type),
+    dosage_per_hectare INT,
+    PRIMARY KEY (crop_name),
     FOREIGN KEY (crop_name) REFERENCES crops(crop_name)
 );
 CREATE TABLE yield_history(
