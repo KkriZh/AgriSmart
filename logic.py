@@ -1,18 +1,35 @@
 import mysql.connector
-from db import  get_connection
+from db import get_connection
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 
+user_info = {}
+
 def initialize_system():
-    conn=get_connection()
+    conn = get_connection()
     if conn:
         print("System Initialized: Database connected.")
         conn.close()
     else:
         raise ConnectionError("Failed to connect to the database")
 
-def recommend_crops(duration=None,soil=None, temp=None, season=None, water_requirement=None):
+def save_user_data(name, location, preferences):
+    global user_info
+    user_info = {"name": name, "location": location, "preferences": preferences}
+    print(f"User data saved: {user_info}")
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO users (username, region) VALUES (%s, %s)
+        ON DUPLICATE KEY UPDATE region = VALUES(region)
+    """, (name, location))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def recommend_crops(duration=None, soil=None, temp=None, season=None, water_requirement=None):
     conn = get_connection()
     cursor = conn.cursor()
     conditions = []
@@ -21,7 +38,7 @@ def recommend_crops(duration=None,soil=None, temp=None, season=None, water_requi
         conditions.append("water_requirement = %s")
         params.append(water_requirement)
     if season:
-        conditions.append("soil = %s")
+        conditions.append("season = %s")
         params.append(season)
     if duration:
         conditions.append("duration = %s")
@@ -45,11 +62,11 @@ def recommend_crops(duration=None,soil=None, temp=None, season=None, water_requi
     return crops
 
 def crop_details(crop):
-    conn=get_connection()
-    cursor=conn.cursor()
-    query="SELECT * FROM crops WHERE crop_name=%s"
-    cursor.execute(query,(crop,))
-    result=cursor.fetchone()
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = "SELECT * FROM crops WHERE crop_name=%s"
+    cursor.execute(query, (crop,))
+    result = cursor.fetchone()
     cursor.close()
     conn.close()
     return result
@@ -57,8 +74,7 @@ def crop_details(crop):
 def estimate_resources(crop, land_area):
     conn = get_connection()
     cursor = conn.cursor()
-    query = "SELECT fertilizer_name, dosage_per_hectare FROM fertilizers WHERE crop_name = %s"
-    cursor.execute(query, (crop,))
+    cursor.execute("SELECT fertilizer_name, dosage_per_hectare FROM fertilizers WHERE crop_name = %s", (crop,))
     fert = cursor.fetchone()
     cursor.execute("SELECT method FROM irrigation WHERE crop_name = %s", (crop,))
     irrig = cursor.fetchone()
@@ -78,58 +94,61 @@ def estimate_resources(crop, land_area):
 def get_yield_stats(region=None, crop=None):
     conn = get_connection()
     cursor = conn.cursor()
-    
     query = "SELECT crop_name, region, year, yield_per_hectare FROM yield_history WHERE 1=1"
     params = []
-    
     if region:
         query += " AND region = %s"
         params.append(region)
     if crop:
         query += " AND crop_name = %s"
         params.append(crop)
-
     query += " ORDER BY year"
-
     cursor.execute(query, tuple(params))
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
+    return pd.DataFrame(rows, columns=["crop_name", "region", "year", "yield_per_hectare"])
 
-    df = pd.DataFrame(rows, columns=["crop_name", "region", "year", "yield_per_hectare"])
-    return df
-
-
-def plot_yield_by_crop():
-    df=get_yield_stats()
+def plot_yield_by_crop(embed_frame=None):
+    df = get_yield_stats()
     if df.empty:
         print("No data to plot.")
         return
-    sns.lineplot(data=df, x="year", y="yield_per_hectare", hue="crop_name", marker="o")
-    plt.title("Yield Trend by Crop")
-    plt.xlabel("Year")
-    plt.ylabel("Yield (kg/hectare)")
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
+    fig, ax = plt.subplots()
+    sns.barplot(data=df, x="year", y="yield_per_hectare", hue="crop_name", ax=ax)
+    ax.set_title("Yield Trend by Crop")
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Yield (kg/hectare)")
+    ax.grid(True)
+    if embed_frame:
+        canvas = FigureCanvasTkAgg(fig, master=embed_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill="both", expand=True)
+    else:
+        plt.tight_layout()
+        plt.show()
 
-
-def plot_yield_by_region():
-    df=get_yield_stats()
+def plot_yield_by_region(embed_frame=None):
+    df = get_yield_stats()
     if df.empty:
         print("No data to plot.")
         return
-    sns.lineplot(data=df, x="year", y="yield_per_hectare", hue="region", marker="o")
-    plt.title("Yield Trend by Region")
-    plt.xlabel("Year")
-    plt.ylabel("Yield (kg/hectare)")
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
+    fig, ax = plt.subplots()
+    sns.barplot(data=df, x="year", y="yield_per_hectare", hue="region", ax=ax)
+    ax.set_title("Yield Trend by Region")
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Yield (kg/hectare)")
+    ax.grid(True)
+    if embed_frame:
+        canvas = FigureCanvasTkAgg(fig, master=embed_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill="both", expand=True)
+    else:
+        plt.tight_layout()
+        plt.show()
 
 def plot_crop_region_matrix():
-    df=get_yield_stats()
+    df = get_yield_stats()
     if df.empty:
         print("No data to plot.")
         return
@@ -144,25 +163,20 @@ def plot_crop_region_matrix():
 def analyze_market(crops=None):
     conn = get_connection()
     cursor = conn.cursor()
-
     query = "SELECT crop_name, price_per_KG FROM market_prices"
     params = ()
-
     if crops:
         placeholders = ','.join(['%s'] * len(crops))
         query += f" WHERE crop_name IN ({placeholders})"
         params = tuple(crops)
-
     cursor.execute(query, params)
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
+    return pd.DataFrame(rows, columns=["crop_name", "price_per_KG"])
 
-    df = pd.DataFrame(rows, columns=["crop_name", "price_per_KG"])
-    return df
-
-def plot_market_prices(crops=None):
-    df = analyze_market(crops)
+def plot_market_prices():
+    df = analyze_market()
     if df.empty:
         print("No market price data found.")
         return
@@ -179,21 +193,17 @@ def plot_market_prices(crops=None):
 def get_soil_fertility():
     conn = get_connection()
     cursor = conn.cursor()
-    query = "SELECT type, fertility_level FROM soil_data"
-    cursor.execute(query)
+    cursor.execute("SELECT type, fertility_level FROM soil_data")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
-
-    df = pd.DataFrame(rows, columns=["Soil Type", "Fertility Level"])
-    return df
+    return pd.DataFrame(rows, columns=["Soil Type", "Fertility Level"])
 
 def plot_soil_fertility_distribution():
     df = get_soil_fertility()
     if df.empty:
         print("No soil data found.")
         return
-    
     plt.figure(figsize=(8, 5))
     sns.countplot(data=df, x="Fertility Level", order=["Low", "Medium", "High"], palette="Set2")
     plt.title("Distribution of Soil Fertility Levels")
@@ -205,32 +215,27 @@ def plot_soil_fertility_distribution():
 def get_weather(region=None, month=None):
     conn = get_connection()
     cursor = conn.cursor()
-
     query = "SELECT region, month, avg_temp, rainfall_mm FROM weather_data WHERE 1=1"
     params = []
-
     if region:
         query += " AND region = %s"
         params.append(region)
     if month:
         query += " AND month = %s"
         params.append(month)
-
     cursor.execute(query, tuple(params))
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
-
-    df = pd.DataFrame(rows, columns=["region", "month", "avg_temp", "rainfall_mm"])
-    return df
+    return pd.DataFrame(rows, columns=["region", "month", "avg_temp", "rainfall_mm"])
 
 def plot_weather_trends(region):
     df = get_weather(region=region)
     if df.empty:
         print("No weather data found for this region.")
         return
-    sns.lineplot(data=df, x="month", y="avg_temp", label="Avg Temp", marker="o")
-    sns.lineplot(data=df, x="month", y="rainfall_mm", label="Rainfall (mm)", marker="x")
+    sns.lineplot(data=df, x="month", y="avg_temp", label="Avg Temp")
+    sns.lineplot(data=df, x="month", y="rainfall_mm", label="Rainfall (mm)")
     plt.title(f"Weather Trends for {region}")
     plt.xlabel("Month")
     plt.ylabel("Value")
@@ -264,7 +269,3 @@ def get_storage_advice(crop):
             "condition": result[2]
         }
     return None
-
-def save_user_data(name, location, preferences):
-    # To be implemented: Store user preferences to personalize crop suggestions
-    pass
