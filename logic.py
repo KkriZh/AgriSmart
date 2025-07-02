@@ -201,3 +201,70 @@ def plot_soil_fertility_distribution():
     plt.ylabel("Count of Soil Types")
     plt.tight_layout()
     plt.show()
+
+def get_weather(region=None, month=None):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = "SELECT region, month, avg_temp, rainfall_mm FROM weather_data WHERE 1=1"
+    params = []
+
+    if region:
+        query += " AND region = %s"
+        params.append(region)
+    if month:
+        query += " AND month = %s"
+        params.append(month)
+
+    cursor.execute(query, tuple(params))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    df = pd.DataFrame(rows, columns=["region", "month", "avg_temp", "rainfall_mm"])
+    return df
+
+def plot_weather_trends(region):
+    df = get_weather(region=region)
+    if df.empty:
+        print("No weather data found for this region.")
+        return
+    sns.lineplot(data=df, x="month", y="avg_temp", label="Avg Temp", marker="o")
+    sns.lineplot(data=df, x="month", y="rainfall_mm", label="Rainfall (mm)", marker="x")
+    plt.title(f"Weather Trends for {region}")
+    plt.xlabel("Month")
+    plt.ylabel("Value")
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def get_irrigation_method(crop):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT method FROM irrigation WHERE crop_name = %s", (crop,))
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return result[0] if result else None
+
+def get_storage_advice(crop):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT storage_temp_celsius, storage_life_days, storage_condition
+        FROM storage_advice WHERE crop_name = %s
+    """, (crop,))
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if result:
+        return {
+            "temperature": result[0],
+            "life days": result[1],
+            "condition": result[2]
+        }
+    return None
+
+def save_user_data(name, location, preferences):
+    # To be implemented: Store user preferences to personalize crop suggestions
+    pass
