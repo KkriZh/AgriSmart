@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AgriSmart - Farm Intelligence</title>
+    <meta
+      name="description"
+      content="AgriSmart is an intelligent farm management system for planning, monitoring, and analyzing crop production."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="backdrop">
+      <span class="orb orb-1"></span>
+      <span class="orb orb-2"></span>
+      <span class="orb orb-3"></span>
+    </div>
+
+    <header class="nav">
+      <div class="logo">AgriSmart</div>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#planner">Planner</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#architecture">Architecture</a>
+      </nav>
+      <a class="nav-cta" href="#analytics">View analytics</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">Farm Intelligence Platform</div>
+          <h1>Plan. Monitor. Grow with confidence.</h1>
+          <p>
+            AgriSmart brings together season planning, irrigation scheduling, fertilizer guidance,
+            and market insights to keep every acre intentional. Built for practical farm decisions,
+            not just dashboards.
+          </p>
+          <div class="hero-actions">
+            <a class="primary" href="#planner">Try the planner</a>
+            <a class="secondary" href="#features">See capabilities</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-value">11</span>
+              <span class="stat-label">core modules</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">SQL</span>
+              <span class="stat-label">backed records</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">Local</span>
+              <span class="stat-label">first workflows</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="panel-header">
+            <span>Season Snapshot</span>
+            <span class="pill">Live preview</span>
+          </div>
+          <div class="panel-body">
+            <div class="panel-row">
+              <span>Soil readiness</span>
+              <strong>Balanced</strong>
+            </div>
+            <div class="panel-row">
+              <span>Irrigation cadence</span>
+              <strong>Every 3 days</strong>
+            </div>
+            <div class="panel-row">
+              <span>Fertilizer focus</span>
+              <strong>Potassium blend</strong>
+            </div>
+            <div class="panel-row">
+              <span>Harvest window</span>
+              <strong>Late Oct - Early Nov</strong>
+            </div>
+          </div>
+          <div class="panel-footer">
+            <span>Built with Python + MySQL</span>
+            <span class="signal">Signal steady</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="section">
+        <div class="section-head">
+          <h2>Everything a season needs</h2>
+          <p>
+            AgriSmart covers the full production lifecycle - from crop rotation planning to
+            yield tracking and storage advice.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="card">
+            <h3>Crop Season Planner</h3>
+            <p>Select suitable crops based on location, climate, and seasonality.</p>
+          </article>
+          <article class="card">
+            <h3>Rotation Optimizer</h3>
+            <p>Build smarter cycles to avoid soil exhaustion and nutrient drift.</p>
+          </article>
+          <article class="card">
+            <h3>Irrigation Scheduler</h3>
+            <p>Water guidance tuned to crop type, region, and field size.</p>
+          </article>
+          <article class="card">
+            <h3>Fertilizer Recommender</h3>
+            <p>Soil-based fertilizer suggestions for healthier output.</p>
+          </article>
+          <article class="card">
+            <h3>Yield + Market Tracker</h3>
+            <p>Estimate harvest volumes, costs, and market value swings.</p>
+          </article>
+          <article class="card">
+            <h3>Harvest & Storage Advisor</h3>
+            <p>Know when to harvest and how long produce can store.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="planner" class="section planner-section">
+        <div class="section-head">
+          <h2>Quick Planner</h2>
+          <p>Get a sample season plan in seconds. Use it as a starting point for real data.</p>
+        </div>
+        <div class="planner">
+          <form class="planner-form" id="planner-form">
+            <label>
+              Region
+              <select id="region">
+                <option value="temperate">Temperate</option>
+                <option value="arid">Arid</option>
+                <option value="tropical">Tropical</option>
+                <option value="coastal">Coastal</option>
+                <option value="highland">Highland</option>
+              </select>
+            </label>
+            <label>
+              Season
+              <select id="season">
+                <option value="spring">Spring</option>
+                <option value="summer">Summer</option>
+                <option value="monsoon">Monsoon</option>
+                <option value="autumn">Autumn</option>
+                <option value="winter">Winter</option>
+              </select>
+            </label>
+            <label>
+              Crop type
+              <select id="crop">
+                <option value="grains">Grains</option>
+                <option value="vegetables">Vegetables</option>
+                <option value="legumes">Legumes</option>
+                <option value="fruit">Fruit</option>
+              </select>
+            </label>
+            <label>
+              Land size (acres)
+              <input id="land" type="number" min="1" max="2000" value="25" />
+            </label>
+            <button type="submit">Generate plan</button>
+          </form>
+          <div class="planner-output" id="planner-output">
+            <h3>Season summary</h3>
+            <div class="output-grid">
+              <div class="output-card">
+                <span>Water cadence</span>
+                <strong id="water-cadence">4x per week</strong>
+              </div>
+              <div class="output-card">
+                <span>Fertilizer focus</span>
+                <strong id="fertilizer-focus">Nitrogen + micronutrients</strong>
+              </div>
+              <div class="output-card">
+                <span>Harvest window</span>
+                <strong id="harvest-window">85-95 days</strong>
+              </div>
+              <div class="output-card">
+                <span>Labor intensity</span>
+                <strong id="labor-intensity">Moderate</strong>
+              </div>
+            </div>
+            <p class="output-note">
+              Output is illustrative. Replace with local soil tests and crop data for operational planning.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="analytics" class="section analytics-section">
+        <div class="section-head">
+          <h2>Analytics preview</h2>
+          <p>Sample insights from season planning data. Swap in real farm records when connected.</p>
+        </div>
+        <div class="analytics-grid">
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3>Yield by crop</h3>
+              <span>seaborn</span>
+            </div>
+            <img
+              class="chart chart-image"
+              src="assets/charts/yield_by_crop.png"
+              alt="Yield by crop chart generated in seaborn"
+              loading="lazy"
+            />
+          </article>
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3>Yield by region</h3>
+              <span>seaborn</span>
+            </div>
+            <img
+              class="chart chart-image"
+              src="assets/charts/yield_by_region.png"
+              alt="Yield by region chart generated in seaborn"
+              loading="lazy"
+            />
+          </article>
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3>Weather trends</h3>
+              <span>seaborn</span>
+            </div>
+            <img
+              class="chart chart-image"
+              src="assets/charts/weather_trend.png"
+              alt="Weather trend chart generated in seaborn"
+              loading="lazy"
+            />
+          </article>
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3>Market prices</h3>
+              <span>seaborn</span>
+            </div>
+            <img
+              class="chart chart-image"
+              src="assets/charts/market_prices.png"
+              alt="Market price chart generated in seaborn"
+              loading="lazy"
+            />
+          </article>
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3>Soil fertility</h3>
+              <span>seaborn</span>
+            </div>
+            <img
+              class="chart chart-image"
+              src="assets/charts/soil_fertility.png"
+              alt="Soil fertility distribution chart generated in seaborn"
+              loading="lazy"
+            />
+          </article>
+        </div>
+      </section>
+
+      <section id="architecture" class="section">
+        <div class="section-head">
+          <h2>Built for real workflows</h2>
+          <p>AgriSmart blends local-first tools with data-backed guidance.</p>
+        </div>
+        <div class="timeline">
+          <div class="step">
+            <span class="step-number">01</span>
+            <h3>Data foundation</h3>
+            <p>Python modules store crop, soil, and financial records in MySQL.</p>
+          </div>
+          <div class="step">
+            <span class="step-number">02</span>
+            <h3>Decision logic</h3>
+            <p>Scheduling, rotation, and forecasting logic keeps plans consistent.</p>
+          </div>
+          <div class="step">
+            <span class="step-number">03</span>
+            <h3>Interfaces</h3>
+            <p>Tkinter GUI for local use with optional web dashboard workstreams.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>
+        <strong>AgriSmart</strong>
+        <p>Field-ready intelligence for every season.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#planner">Planner</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#architecture">Architecture</a>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
